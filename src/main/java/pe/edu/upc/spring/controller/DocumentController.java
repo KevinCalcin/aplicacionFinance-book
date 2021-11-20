@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.ToDoubleFunction;
 
 import javax.validation.Valid;
 
@@ -36,6 +37,7 @@ import pe.edu.upc.spring.model.Users;
 import pe.edu.upc.spring.service.ICompanyService;
 import pe.edu.upc.spring.service.ICostService;
 import pe.edu.upc.spring.service.IDocumentService;
+import pe.edu.upc.spring.service.IPurseService;
 import pe.edu.upc.spring.service.IRateService;
 import pe.edu.upc.spring.service.IRateTypeService;
 import pe.edu.upc.spring.service.IReasonCfService;
@@ -62,6 +64,10 @@ public class DocumentController {
 	private ITermRateService iTermRateService;
 
 	@Autowired
+	private IPurseService iPurseService;
+
+	
+	@Autowired
 	private IRateTypeService iRateTypeService;
 
 	@Autowired
@@ -78,6 +84,7 @@ public class DocumentController {
 
 	private List<Cost> listCostCi;
 	private List<Cost> listCostCf;
+	private List<Document> listDocumentPurse;
 	private List<RateType> listRateType;
 	private List<Cost> listCostEliminadosCf;
 	private List<Cost> listCostEliminadosCi;
@@ -215,7 +222,7 @@ public class DocumentController {
 		return "factura";
 	}
 	
-	@RequestMapping("/iractualizarCarteraFactura")
+	@RequestMapping("/iractualizarCarteraFactura")  //CARTERA FACTURA
 	public String iractualizarCarteraFactura(Model model) {
 
 		model.addAttribute("user", userController.sessionUser);
@@ -231,7 +238,20 @@ public class DocumentController {
 		model.addAttribute("rate", rate);
 		model.addAttribute("resultados", resultados);
 		model.addAttribute("document", document);
-
+		
+		
+		if(purse.getIdPurse()>0) {
+		int pursepos = iPurseService.listPurse().size()-1;
+		pursepos = iPurseService.listPurse().get(pursepos).getIdPurse();
+		
+		
+		listDocumentPurse = null;
+		listDocumentPurse = new ArrayList<Document>();
+		listDocumentPurse = iDocumentService.findDocumentbyPurse(String.valueOf(pursepos));
+		
+		
+		model.addAttribute("listCarteraFactura",listDocumentPurse);
+		}
 		return "carteraFactura";
 	}
 	
@@ -737,6 +757,282 @@ public class DocumentController {
 
 	}
 
+	
+	@RequestMapping("/CrearCarteraFactura")
+	public String CrearCarteraFactura(@ModelAttribute Document objDocument, @ModelAttribute Rate objRate, BindingResult binRes,
+			Model model) throws ParseException {
+
+		resultados = 1;
+
+		objDocument.setDays(calcularEdad(objDocument.getDateOfIssue(), objDocument.getPaymentDate()));
+
+		int tasa_cap;
+		double tasa; // TASA
+		int dias = objDocument.getDays();
+		double valor_nominal;
+		double dias_tasa;
+		double d;
+		double ted;
+		float D;
+		int retencion;
+		double CI = 0;
+		double CF = 0;
+		double valor_neto;
+		double valor_recibido;
+		double valor_total;
+		double TCEA;
+
+		if (tasa_factura == 1) { // calculo para tasa efectiva
+
+			tasa = objRate.getRateNominal() / (double) 100;
+			valor_nominal = objDocument.getNominalValue();
+			dias_tasa = objRate.getTermRate().getNum_days();
+			tasa = Math.pow(1 + tasa, objRate.getDays() / dias_tasa) - 1;
+			objRate.setRate(tasa * 100);
+			ted = Math.pow(1 + tasa, dias / (double) objRate.getDays()) - 1;
+
+			objDocument.setTeD(ted);
+			d = ted / (1 + ted);
+			objDocument.setDiscountedRate(d); // d
+			D = (float) (valor_nominal * d);
+			objDocument.setDaysDiscount(D); // D
+			retencion = objDocument.getRetention();
+
+			for (int i = 0; i < listCostCi.size(); i++) {
+				CI = CI + listCostCi.get(i).getAmount();
+			}
+
+			for (int i = 0; i < listCostCf.size(); i++) {
+				CF = CF + listCostCf.get(i).getAmount();
+			}
+
+			DecimalFormat formato1 = new DecimalFormat("####.000000000");
+			System.out.println(objDocument.getIdDocument());
+
+			objDocument.setTotalInitialCost(CI);
+			objDocument.setTotalFinalCost(CF);
+
+			valor_neto = valor_nominal - D;
+			objDocument.setNetValue(valor_neto);
+			valor_recibido = valor_neto - retencion - CI;
+			objDocument.setRecivedValue(valor_recibido);
+			valor_total = valor_nominal - retencion + CF;
+			objDocument.setValueTotal(valor_total);
+			TCEA = Math.pow(valor_total / valor_recibido, objRate.getDays() / (double) dias) - 1;
+			objDocument.setTCEA(TCEA);
+
+			/////////////// REGISTRO EN LA BASE DE DATOS
+			purse.setUser(userController.sessionUser);
+			iPurseService.save(purse);
+			objDocument.setPurse(purse);
+			objDocument.setUser(userController.sessionUser);
+			objDocument.setCompanyTransmitter(userController.sessionUser.getCompany());
+			objDocument.setCompanyReceiver(userController.sessionUser.getCompany());
+			objDocument.setIdDocument(document.getIdDocument());
+			objRate.setIdRate(rate.getIdRate());
+			boolean registro_exitoso_tasa = iRateService.save(objRate);
+
+			if (registro_exitoso_tasa) {
+				objDocument.setRateDoc(objRate);
+				objDocument.setTypeDocument(iTypeDocumentService.listTypeDocument().get(0));
+				boolean registro_exitoso_document = iDocumentService.save(objDocument);
+
+				if (registro_exitoso_document) {
+
+					for (int i = 0; i < listCostCi.size(); i++) { // elimina lista Ci
+						Cost cost = listCostCi.get(i);
+						if (cost.getDocument() != null) {
+							iCostService.delete(cost.getIdCost());
+						}
+						System.out.println("ACTUALIZADO");
+					}
+
+					for (int i = 0; i < listCostCf.size(); i++) { // elimina lista Cf
+						Cost cost = listCostCf.get(i);
+						if (cost.getDocument() != null) {
+							iCostService.delete(cost.getIdCost());
+						}
+						System.out.println("ACTUALIZADO");
+					}
+
+					int m = listCostEliminadosCf.size();
+					for (int i = 0; i < m; i++) { // elimina registro de cf
+						Cost cost = listCostEliminadosCf.get(i);
+						if (cost.getDocument() != null) {
+							iCostService.delete(cost.getIdCost());
+						
+						}
+
+					}
+					m = listCostEliminadosCi.size();
+					for (int i = 0; i < m; i++) {  // elimina registro de cf
+						Cost cost = listCostEliminadosCi.get(i);
+						if (cost.getDocument() != null) {
+							iCostService.delete(cost.getIdCost());
+							
+						}
+
+					}
+
+					for (int i = 0; i < listCostCi.size(); i++) {
+						Cost cost = listCostCi.get(i);
+						cost.setState(false);
+						cost.setIdRef(0);
+						cost.setDocument(objDocument);
+						iCostService.save(cost);
+					}
+
+					for (int i = 0; i < listCostCf.size(); i++) {
+						Cost cost = listCostCf.get(i);
+						cost.setState(true);
+						cost.setIdRef(0);
+						cost.setDocument(objDocument);
+						iCostService.save(cost);
+					}
+
+					System.out.println("REGISTRO EXITOSO");
+
+				}
+
+			}
+			contador = 0;
+			////////////
+			document = objDocument;
+			rate = objRate;
+
+			// Operaciones que se mostraran en patanlla
+			document.setTeD(ted * (double) 100);
+			document.setDiscountedRate(d * (double) 100);
+			document.setTCEA(TCEA * (double) 100);
+		} else {
+			tasa_cap = objRate.getTermRateCapital().getNum_days();
+			valor_nominal = objDocument.getNominalValue();
+			dias_tasa = objRate.getTermRate().getNum_days();
+			tasa = objRate.getRateNominal() / (double) 100;
+			tasa = Math.pow(1 + (tasa / (dias_tasa / (double) tasa_cap)), (objRate.getDays()) / (double) tasa_cap) - 1;
+			objRate.setRate(tasa * 100);
+			ted = Math.pow(1 + tasa, dias / (double) objRate.getDays()) - 1;
+			objDocument.setTeD(ted);
+			d = ted / (1 + ted);
+			objDocument.setDiscountedRate(d); // d
+			D = (float) (valor_nominal * d);
+			objDocument.setDaysDiscount(D); // D
+			retencion = objDocument.getRetention();
+
+			for (int i = 0; i < listCostCi.size(); i++) {
+				CI = CI + listCostCi.get(i).getAmount();
+			}
+
+			for (int i = 0; i < listCostCf.size(); i++) {
+				CF = CF + listCostCf.get(i).getAmount();
+			}
+
+			objDocument.setTotalInitialCost(CI);
+			objDocument.setTotalFinalCost(CF);
+
+			valor_neto = valor_nominal - D;
+			objDocument.setNetValue(valor_neto);
+			valor_recibido = valor_neto - retencion - CI;
+			objDocument.setRecivedValue(valor_recibido);
+			valor_total = valor_nominal - retencion + CF;
+			objDocument.setValueTotal(valor_total);
+			TCEA = Math.pow(valor_total / valor_recibido, objRate.getDays() / (double) dias) - 1;
+			objDocument.setTCEA(TCEA);
+
+			DecimalFormat formato1 = new DecimalFormat("####.000000000");
+			System.out.println(formato1.format(objDocument.getIdDocument()));
+
+/////////////// REGISTRO EN LA BASE DE DATOS
+			purse.setUser(userController.sessionUser);
+			iPurseService.save(purse);
+			objDocument.setPurse(purse);
+			objDocument.setUser(userController.sessionUser);
+			objDocument.setCompanyTransmitter(userController.sessionUser.getCompany());
+			objDocument.setCompanyReceiver(userController.sessionUser.getCompany());
+
+			objDocument.setIdDocument(document.getIdDocument());
+			objRate.setIdRate(rate.getIdRate());
+			boolean registro_exitoso_tasa = iRateService.save(objRate);
+
+			if (registro_exitoso_tasa) {
+				objDocument.setRateDoc(objRate);
+				objDocument.setTypeDocument(iTypeDocumentService.listTypeDocument().get(0));
+				boolean registro_exitoso_document = iDocumentService.save(objDocument);
+
+				if (registro_exitoso_document) {
+
+					for (int i = 0; i < listCostCi.size(); i++) { // elimina lista Ci
+						Cost cost = listCostCi.get(i);
+						if (cost.getDocument() != null) {
+							iCostService.delete(cost.getIdCost());
+						}
+						System.out.println("ACTUALIZADO");
+					}
+
+					for (int i = 0; i < listCostCf.size(); i++) { // elimina lista Cf
+						Cost cost = listCostCf.get(i);
+						if (cost.getDocument() != null) {
+							iCostService.delete(cost.getIdCost());
+						}
+						System.out.println("ACTUALIZADO");
+					}
+
+					int m = listCostEliminadosCf.size();
+					for (int i = 0; i < m; i++) { // elimina registro de cf
+						Cost cost = listCostEliminadosCf.get(i);
+						if (cost.getDocument() != null) {
+							iCostService.delete(cost.getIdCost());
+						
+						}
+
+					}
+					m = listCostEliminadosCi.size();
+					for (int i = 0; i < m; i++) {  // elimina registro de cf
+						Cost cost = listCostEliminadosCi.get(i);
+						if (cost.getDocument() != null) {
+							iCostService.delete(cost.getIdCost());
+							
+						}
+
+					}
+
+					for (int i = 0; i < listCostCi.size(); i++) {
+						Cost cost = listCostCi.get(i);
+						cost.setState(false);
+						cost.setIdRef(0);
+						cost.setDocument(objDocument);
+						iCostService.save(cost);
+					}
+
+					for (int i = 0; i < listCostCf.size(); i++) {
+						Cost cost = listCostCf.get(i);
+						cost.setState(true);
+						cost.setIdRef(0);
+						cost.setDocument(objDocument);
+						iCostService.save(cost);
+					}
+
+					System.out.println("REGISTRO EXITOSO");
+
+				}
+
+			}
+			contador = 0;
+			////////////
+			document = objDocument;
+			rate = objRate;
+
+			// Operaciones que se mostraran en patanlla
+			document.setTeD(ted * (double) 100);
+			document.setDiscountedRate(d * (double) 100);
+			document.setTCEA(TCEA * (double) 100);
+		}
+
+		return "redirect:/document/iractualizarCarteraFactura";
+
+	}
+
+	
 	@RequestMapping("/CrearLetra")
 	public String mostrarL(@ModelAttribute Document objDocument, @ModelAttribute Rate objRate, BindingResult binRes,
 			Model model) throws ParseException {

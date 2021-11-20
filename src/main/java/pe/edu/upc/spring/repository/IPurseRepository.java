@@ -11,13 +11,12 @@ import org.springframework.stereotype.Repository;
 import pe.edu.upc.spring.model.Company;
 import pe.edu.upc.spring.model.Users;
 import pe.edu.upc.spring.model.Document;
+import pe.edu.upc.spring.model.Purse;
 
 
 @Repository
-public interface IDocumentRepository extends JpaRepository<Document, Integer>{
+public interface IPurseRepository extends JpaRepository<Purse, Integer>{
 	
-	@Query("from Document d where CAST(d.Purse.idPurse AS string) = :pursePos")
-	List<Document> findDocumentbyPurse(@Param("pursePos")String pursePos);
-
+	
 	
 }

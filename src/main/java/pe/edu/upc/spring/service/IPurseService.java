@@ -6,14 +6,14 @@ import java.util.Optional;
 import pe.edu.upc.spring.model.Company;
 import pe.edu.upc.spring.model.Cost;
 import pe.edu.upc.spring.model.Document;
-
+import pe.edu.upc.spring.model.Purse;
 import pe.edu.upc.spring.model.Users;
 
 
-public interface IDocumentService {
-	public List<Document> listDocument();
-	public boolean save(Document document);
-public List<Document> findDocumentbyPurse(String pursePos);
+public interface IPurseService {
+	public List<Purse> listPurse();
+	public boolean save(Purse purse);
+
 
 }
 

@@ -9,23 +9,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pe.edu.upc.spring.model.Cost;
 import pe.edu.upc.spring.model.Document;
+import pe.edu.upc.spring.model.Purse;
 import pe.edu.upc.spring.repository.ICompanyRepository;
 import pe.edu.upc.spring.repository.IDocumentRepository;
+import pe.edu.upc.spring.repository.IPurseRepository;
 import pe.edu.upc.spring.service.ICompanyService;
 import pe.edu.upc.spring.service.IDocumentService;
+import pe.edu.upc.spring.service.IPurseService;
 
 @Service
-public class DocumentServiceImpl implements IDocumentService {
+public class PurseServiceImpl implements IPurseService {
 
 	@Autowired
-	private IDocumentRepository dDocument;
+	private IPurseRepository dPurse;
 	
 	
 	@Override
 	@Transactional
-	public boolean save(Document document) {
-		Document objDocument= dDocument.save(document);
-		if (objDocument == null)
+	public boolean save(Purse purse) {
+		Purse objPurse= dPurse.save(purse);
+		if (objPurse == null)
 			return false;
 		else
 			return true;
@@ -33,15 +36,8 @@ public class DocumentServiceImpl implements IDocumentService {
 
 
 	@Transactional(readOnly = true)
-	public List<Document> listDocument() {
-		return dDocument.findAll();
-	}
-
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<Document> findDocumentbyPurse(String pursePos) {
-		return dDocument.findDocumentbyPurse(pursePos);
+	public List<Purse> listPurse() {
+		return dPurse.findAll();
 	}
 	
 }

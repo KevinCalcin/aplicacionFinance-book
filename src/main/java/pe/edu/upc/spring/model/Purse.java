@@ -7,7 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -37,15 +38,17 @@ public class Purse implements Serializable {
 
 	@Column(name = "TIR", length = 150, nullable = true)
 	private int TIR;
-
-
+	
+	@ManyToOne
+	@JoinColumn(name = "idUsers", nullable = false)
+	private Users User;
+	
 	public Purse() {
 		super();
 	}
 
-
 	public Purse(int idPurse, double totalGivenAmount, double totalRecivedAmount, double totalInitialCost,
-			double totalFinalCost, double tCEA, int tIR) {
+			double totalFinalCost, double tCEA, int tIR, Users user) {
 		super();
 		this.idPurse = idPurse;
 		this.totalGivenAmount = totalGivenAmount;
@@ -54,77 +57,72 @@ public class Purse implements Serializable {
 		this.totalFinalCost = totalFinalCost;
 		TCEA = tCEA;
 		TIR = tIR;
+		User = user;
 	}
-
 
 	public int getIdPurse() {
 		return idPurse;
 	}
 
-
 	public void setIdPurse(int idPurse) {
 		this.idPurse = idPurse;
 	}
-
 
 	public double getTotalGivenAmount() {
 		return totalGivenAmount;
 	}
 
-
 	public void setTotalGivenAmount(double totalGivenAmount) {
 		this.totalGivenAmount = totalGivenAmount;
 	}
-
 
 	public double getTotalRecivedAmount() {
 		return totalRecivedAmount;
 	}
 
-
 	public void setTotalRecivedAmount(double totalRecivedAmount) {
 		this.totalRecivedAmount = totalRecivedAmount;
 	}
-
 
 	public double getTotalInitialCost() {
 		return totalInitialCost;
 	}
 
-
 	public void setTotalInitialCost(double totalInitialCost) {
 		this.totalInitialCost = totalInitialCost;
 	}
-
 
 	public double getTotalFinalCost() {
 		return totalFinalCost;
 	}
 
-
 	public void setTotalFinalCost(double totalFinalCost) {
 		this.totalFinalCost = totalFinalCost;
 	}
-
 
 	public double getTCEA() {
 		return TCEA;
 	}
 
-
 	public void setTCEA(double tCEA) {
 		TCEA = tCEA;
 	}
-
 
 	public int getTIR() {
 		return TIR;
 	}
 
-
 	public void setTIR(int tIR) {
 		TIR = tIR;
 	}
 
+	public Users getUser() {
+		return User;
+	}
+
+	public void setUser(Users user) {
+		User = user;
+	}
+	
 	
 }

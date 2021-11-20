@@ -27,7 +27,7 @@
 
 	<div th:replace="fragments/header :: header_user"></div>
 
-	<form method=post th:action="@{/document/CrearFactura}"
+	<form method=post th:action="@{/document/CrearCarteraFactura}"
 		th:object="${document}">
 		<div class="row">
 
@@ -378,7 +378,7 @@
 	<div th:if="${resultados ==0}"></div>
 
 	<div th:if="${resultados ==1}"
-		style="position: absolute; top: 125%; left: 25%;">
+		style="position: absolute; top: 125%;">
 		<form th:object="${document}">
 
 			<table class="table table-striped table-hover">
@@ -410,15 +410,15 @@
 						<td style="text-align: center" th:text="${l.paymentDate}"></td>
 						<td style="text-align: center" th:text="${l.days}"></td>
 						<td style="text-align: center" th:text="${l.retention}"></td>
-						<td style="text-align: center" th:text="${l.teD}"></td>
-						<td style="text-align: center" th:text="${l.discountedRate}"></td>
-						<td style="text-align: center" th:text="${l.daysDiscount}"></td>
+						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.teD * 100,1,7,'COMMA') + '%'}"></td>
+						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.discountedRate * 100,1,7,'COMMA') + '%'} "></td>
+						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.daysDiscount * 100,1,7,'COMMA') + '%'}"></td>
 						<td style="text-align: center" th:text="${l.totalInitialCost}"></td>
 						<td style="text-align: center" th:text="${l.totalFinalCost}"></td>
-						<td style="text-align: center" th:text="${l.netValue}"></td>
-						<td style="text-align: center" th:text="${l.recivedValue}"></td>
-						<td style="text-align: center" th:text="${l.valueTotal}"></td>
-						<td style="text-align: center" th:text="${l.TCEA}"></td>
+						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.netValue,1,2,'COMMA')}"></td>
+						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.recivedValue ,1,2,'COMMA')}"></td>
+						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.valueTotal  ,1,2,'COMMA')}"></td>
+						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.TCEA * 100,1,7,'COMMA') + '%'}"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -430,10 +430,6 @@
 	<form th:action="@{/document/ab}" method="post">
 		<button type="submit" class="btn btn-default"
 			style="position: absolute; top: 24.5%; left: 40%;">Cambiar</button>
-	</form>
-	<form th:action="@{/document/Modificar}" method="post">
-		<button type="submit" class="btn btn-default"
-			style="position: absolute; top: 120%; left: 10%;">Modificar</button>
 	</form>
 
 	<form th:action="@{/document/irRegistrarCarteraFactura}" method="post">
