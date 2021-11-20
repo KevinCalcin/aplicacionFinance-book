@@ -26,6 +26,7 @@ import com.sun.el.parser.ParseException;
 
 import pe.edu.upc.spring.model.Cost;
 import pe.edu.upc.spring.model.Document;
+import pe.edu.upc.spring.model.Purse;
 import pe.edu.upc.spring.model.Rate;
 import pe.edu.upc.spring.model.RateType;
 import pe.edu.upc.spring.model.ReasonCf;
@@ -83,6 +84,7 @@ public class DocumentController {
 
 	private Rate rate;
 	private Document document;
+	private Purse purse;
 	private int resultados;
 	private int tasa_factura;
 	private int contador = 0;
@@ -119,6 +121,43 @@ public class DocumentController {
 		model.addAttribute("cost", new Cost());
 
 		return "factura";
+	}
+	
+	@RequestMapping("/irRegistrarCarteraFactura")                 //////CARTERA FACTURA
+	public String irPaginaRegistrarCarteraFactura(Model model) {
+		tasa_factura = 1;
+		contador = 0;
+		resultados = 0;
+		
+		purse = null;
+		purse = new Purse();
+		rate = null;
+		rate = new Rate();
+		document = new Document();
+		listCostCi = null;
+		listCostCi = new ArrayList<Cost>();
+		listCostCf = null;
+		listCostCf = new ArrayList<Cost>();
+		listRateType = null;
+		listRateType = new ArrayList<RateType>();
+		listCostEliminadosCf = null;
+		listCostEliminadosCf = new ArrayList<Cost>();
+		listCostEliminadosCi = null;
+		listCostEliminadosCi = new ArrayList<Cost>();
+		model.addAttribute("user", userController.sessionUser);
+		model.addAttribute("listReasonCi", iReasonCiService.listReasonCi());
+		model.addAttribute("listReasonCf", iReasonCfService.listReasonCf());
+		model.addAttribute("listTermRate", iTermRateService.listTermRate());
+		model.addAttribute("listRateType", iRateTypeService.listRateType());
+
+		model.addAttribute("listTermRateCapital", iTermRateService.listTermRate());
+		model.addAttribute("tasa_factura", tasa_factura);
+		model.addAttribute("rate", rate);
+		model.addAttribute("document", document);
+		model.addAttribute("resultados", resultados);
+		model.addAttribute("cost", new Cost());
+
+		return "carteraFactura";
 	}
 	
 	@RequestMapping("/irRegistrarFacturaL")
@@ -176,6 +215,26 @@ public class DocumentController {
 		return "factura";
 	}
 	
+	@RequestMapping("/iractualizarCarteraFactura")
+	public String iractualizarCarteraFactura(Model model) {
+
+		model.addAttribute("user", userController.sessionUser);
+		model.addAttribute("listReasonCi", iReasonCiService.listReasonCi());
+		model.addAttribute("listReasonCf", iReasonCfService.listReasonCf());
+		model.addAttribute("listCostInitials", listCostCi);
+		model.addAttribute("listCostFinals", listCostCf);
+		model.addAttribute("listTermRate", iTermRateService.listTermRate());
+		model.addAttribute("listTermRateCapital", iTermRateService.listTermRate());
+		model.addAttribute("listRateType", iRateTypeService.listRateType());
+		model.addAttribute("tasa_factura", tasa_factura);
+		model.addAttribute("cost", new Cost());
+		model.addAttribute("rate", rate);
+		model.addAttribute("resultados", resultados);
+		model.addAttribute("document", document);
+
+		return "carteraFactura";
+	}
+	
 	@RequestMapping("/iractualizarLetra")
 	public String iractualizarLetra(Model model) {
 
@@ -210,6 +269,21 @@ public class DocumentController {
 		return "redirect:/document/iractualizarFactura";
 	}
 	
+	
+	@RequestMapping("/ab")          //CARTERA FCTURA
+	public String carteraFactura(Model model) {
+		if (tasa_factura == 1) {
+			rate.setRateType(iRateTypeService.listRateType().get(1));
+			tasa_factura = 2;
+
+		} else {
+			rate.setRateType(iRateTypeService.listRateType().get(0));
+			tasa_factura = 1;
+		}
+
+		return "redirect:/document/iractualizarCarteraFactura";
+	}
+	
 	@RequestMapping("/al")
 	public String al(Model model) {
 		if (tasa_factura == 1) {
@@ -238,7 +312,7 @@ public class DocumentController {
 		return "redirect:/document/iractualizarFactura";
 
 	}
-	//
+	
 	@RequestMapping("/registrarCostoInicialesL")
 	public String registrarCostoInicialesL(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
 			throws ParseException {
