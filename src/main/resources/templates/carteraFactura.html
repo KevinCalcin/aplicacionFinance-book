@@ -255,14 +255,14 @@
 
 
 		<button type="submit" class="btn btn-default"
-			style="position: absolute; top: 120%;">Mostrar</button>
+			style="position: absolute; top: 120%;">Agregar</button>
 	</form>
 
 
 	<div class="row">
 		<div class="form-group col-sm-6">
-			<form th:action="@{/document/registrarCostosInicialesCarteraFactura}" method="post"
-				th:object="${cost}">
+			<form th:action="@{/document/registrarCostosInicialesCarteraFactura}"
+				method="post" th:object="${cost}">
 				<h5>Costo Iniciales</h5>
 
 				<div class="row">
@@ -302,8 +302,8 @@
 							<td style="text-align: center" th:text="${ci.reasonCi.name}"></td>
 							<td style="text-align: center" th:text="${ci.amount}"></td>
 							<td style="text-align: center"><a
-								th:href="@{/document/eliminar?id=}+${ci.idRef}" class="comment"
-								title="Comment" data-toggle="tooltip"><i
+								th:href="@{/document/eliminarCarteraFactura?id=}+${ci.idRef}"
+								class="comment" title="Comment" data-toggle="tooltip"><i
 									class="material-icons">&#xe872;</i></a></td>
 
 
@@ -316,8 +316,8 @@
 
 		<div class="form-group col-sm-6">
 
-			<form th:action="@{/document/registrarCostosFinalesCarteraFactura}" method="post"
-				th:object="${cost}">
+			<form th:action="@{/document/registrarCostosFinalesCarteraFactura}"
+				method="post" th:object="${cost}">
 
 				<h5>Costo finales</h5>
 
@@ -362,8 +362,8 @@
 							<td style="text-align: center" th:text="${cf.reasonCf.name}"></td>
 							<td style="text-align: center" th:text="${cf.amount}"></td>
 							<td style="text-align: center"><a
-								th:href="@{/document/eliminar?id=}+${cf.idRef}" class="comment"
-								title="Comment" data-toggle="tooltip"><i
+								th:href="@{/document/eliminarCarteraFactura?id=}+${cf.idRef}"
+								class="comment" title="Comment" data-toggle="tooltip"><i
 									class="material-icons">&#xe872;</i></a></td>
 
 						</tr>
@@ -378,7 +378,32 @@
 	<div th:if="${resultados ==0}"></div>
 
 	<div th:if="${resultados ==1}"
-		style="position: absolute; top: 125%;">
+		style="position: absolute; top: 125%; left: 10%;">
+
+		<h5>Resultados</h5>
+		<form th:object="${purse}">
+			<div class="row">
+				<div class="form-group col-sm-6">
+					<label for="email">(VR) Valor Total a Recibir por la
+						cartera</label>
+				</div>
+				<div class="form-group col-sm-6">
+					<input type="text" class="form-control item"
+						th:field="*{totalRecivedAmount}" required />
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-sm-6">
+					<label for="email">(TCEA) Tasa de Coste Efectiva Anual de
+						la cartera(%)</label>
+				</div>
+				<div class="form-group col-sm-6">
+					<input type="text" class="form-control item" th:field="*{TCEA}"
+						required />
+				</div>
+			</div>
+		</form>
+
 		<form th:object="${document}">
 
 			<table class="table table-striped table-hover">
@@ -405,20 +430,29 @@
 				</thead>
 				<tbody>
 					<tr th:each="l: ${listCarteraFactura}">
-						<td style="text-align: center" th:text="${l.dateOfIssue}"></td>
+						<td style="text-align: center"
+							th:text="${ #dates.format(l.dateOfIssue, 'dd-MM-yyyy')} "></td>
 						<td style="text-align: center" th:text="${l.nominalValue}"></td>
-						<td style="text-align: center" th:text="${l.paymentDate}"></td>
+						<td style="text-align: center"
+							th:text="${ #dates.format(l.paymentDate, 'dd-MM-yyyy')}"></td>
 						<td style="text-align: center" th:text="${l.days}"></td>
 						<td style="text-align: center" th:text="${l.retention}"></td>
-						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.teD * 100,1,7,'COMMA') + '%'}"></td>
-						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.discountedRate * 100,1,7,'COMMA') + '%'} "></td>
-						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.daysDiscount * 100,1,7,'COMMA') + '%'}"></td>
+						<td style="text-align: center"
+							th:text="${#numbers.formatDecimal(l.teD * 100,1,7,'COMMA') + '%'}"></td>
+						<td style="text-align: center"
+							th:text="${#numbers.formatDecimal(l.discountedRate * 100,1,7,'COMMA') + '%'} "></td>
+						<td style="text-align: center"
+							th:text="${#numbers.formatDecimal(l.daysDiscount * 100,1,7,'COMMA') + '%'}"></td>
 						<td style="text-align: center" th:text="${l.totalInitialCost}"></td>
 						<td style="text-align: center" th:text="${l.totalFinalCost}"></td>
-						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.netValue,1,2,'COMMA')}"></td>
-						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.recivedValue ,1,2,'COMMA')}"></td>
-						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.valueTotal  ,1,2,'COMMA')}"></td>
-						<td style="text-align: center" th:text="${#numbers.formatDecimal(l.TCEA * 100,1,7,'COMMA') + '%'}"></td>
+						<td style="text-align: center"
+							th:text="${#numbers.formatDecimal(l.netValue,1,2,'COMMA')}"></td>
+						<td style="text-align: center"
+							th:text="${#numbers.formatDecimal(l.recivedValue ,1,2,'COMMA')}"></td>
+						<td style="text-align: center"
+							th:text="${#numbers.formatDecimal(l.valueTotal  ,1,2,'COMMA')}"></td>
+						<td style="text-align: center"
+							th:text="${#numbers.formatDecimal(l.TCEA * 100,1,7,'COMMA') + '%'}"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -431,6 +465,7 @@
 		<button type="submit" class="btn btn-default"
 			style="position: absolute; top: 24.5%; left: 40%;">Cambiar</button>
 	</form>
+
 
 	<form th:action="@{/document/irRegistrarCarteraFactura}" method="post">
 		<button type="submit" class="btn btn-default"

@@ -21,24 +21,15 @@ public class Purse implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idPurse;
 
-	@Column(name = "totalGivenAmount", length = 150, nullable = true)
-	private double totalGivenAmount;
+
 
 	@Column(name = "totalRecivedAmount", length = 150, nullable = true)
 	private double totalRecivedAmount;
 
-	@Column(name = "totalInitialCost", length = 150, nullable = true)
-	private double totalInitialCost;
-
-	@Column(name = "totalFinalCost", length = 150, nullable = true)
-	private double totalFinalCost;
-
+	
 	@Column(name = "TCEA", length = 150, nullable = true)
 	private double TCEA;
 
-	@Column(name = "TIR", length = 150, nullable = true)
-	private int TIR;
-	
 	@ManyToOne
 	@JoinColumn(name = "idUsers", nullable = false)
 	private Users User;
@@ -47,16 +38,11 @@ public class Purse implements Serializable {
 		super();
 	}
 
-	public Purse(int idPurse, double totalGivenAmount, double totalRecivedAmount, double totalInitialCost,
-			double totalFinalCost, double tCEA, int tIR, Users user) {
+	public Purse(int idPurse, double totalRecivedAmount, double tCEA, Users user) {
 		super();
 		this.idPurse = idPurse;
-		this.totalGivenAmount = totalGivenAmount;
 		this.totalRecivedAmount = totalRecivedAmount;
-		this.totalInitialCost = totalInitialCost;
-		this.totalFinalCost = totalFinalCost;
 		TCEA = tCEA;
-		TIR = tIR;
 		User = user;
 	}
 
@@ -68,14 +54,6 @@ public class Purse implements Serializable {
 		this.idPurse = idPurse;
 	}
 
-	public double getTotalGivenAmount() {
-		return totalGivenAmount;
-	}
-
-	public void setTotalGivenAmount(double totalGivenAmount) {
-		this.totalGivenAmount = totalGivenAmount;
-	}
-
 	public double getTotalRecivedAmount() {
 		return totalRecivedAmount;
 	}
@@ -84,36 +62,12 @@ public class Purse implements Serializable {
 		this.totalRecivedAmount = totalRecivedAmount;
 	}
 
-	public double getTotalInitialCost() {
-		return totalInitialCost;
-	}
-
-	public void setTotalInitialCost(double totalInitialCost) {
-		this.totalInitialCost = totalInitialCost;
-	}
-
-	public double getTotalFinalCost() {
-		return totalFinalCost;
-	}
-
-	public void setTotalFinalCost(double totalFinalCost) {
-		this.totalFinalCost = totalFinalCost;
-	}
-
 	public double getTCEA() {
 		return TCEA;
 	}
 
 	public void setTCEA(double tCEA) {
 		TCEA = tCEA;
-	}
-
-	public int getTIR() {
-		return TIR;
-	}
-
-	public void setTIR(int tIR) {
-		TIR = tIR;
 	}
 
 	public Users getUser() {

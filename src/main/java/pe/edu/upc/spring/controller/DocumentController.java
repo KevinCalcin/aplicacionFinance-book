@@ -167,6 +167,41 @@ public class DocumentController {
 		return "carteraFactura";
 	}
 	
+	@RequestMapping("/agregarFacturaCartera")                 //////CARTERA FACTURA
+	public String agregarFacturaCartera(Model model) {
+		tasa_factura = 1;
+		contador = 0;
+		resultados = 0;
+		
+		rate = null;
+		rate = new Rate();
+		document = new Document();
+		listCostCi = null;
+		listCostCi = new ArrayList<Cost>();
+		listCostCf = null;
+		listCostCf = new ArrayList<Cost>();
+		listRateType = null;
+		listRateType = new ArrayList<RateType>();
+		listCostEliminadosCf = null;
+		listCostEliminadosCf = new ArrayList<Cost>();
+		listCostEliminadosCi = null;
+		listCostEliminadosCi = new ArrayList<Cost>();
+		
+		model.addAttribute("user", userController.sessionUser);
+		model.addAttribute("listReasonCi", iReasonCiService.listReasonCi());
+		model.addAttribute("listReasonCf", iReasonCfService.listReasonCf());
+		model.addAttribute("listTermRate", iTermRateService.listTermRate());
+		model.addAttribute("listRateType", iRateTypeService.listRateType());
+		model.addAttribute("listTermRateCapital", iTermRateService.listTermRate());
+		model.addAttribute("tasa_factura", tasa_factura);
+		model.addAttribute("rate", rate);
+		model.addAttribute("document", document);
+		model.addAttribute("resultados", resultados);
+		model.addAttribute("cost", new Cost());
+
+		return "carteraFactura";
+	}
+	
 	@RequestMapping("/irRegistrarFacturaL")
 	public String irPaginaRegistrarL(Model model) {
 		tasa_factura = 1;
@@ -249,7 +284,27 @@ public class DocumentController {
 		listDocumentPurse = new ArrayList<Document>();
 		listDocumentPurse = iDocumentService.findDocumentbyPurse(String.valueOf(pursepos));
 		
-		
+		int tamano = listDocumentPurse.size();
+		double v_entregado =0;
+		double v_recibido =0;
+		int dias=0;
+		int transcurridos=0;
+		double TCEAT=0;
+		for (int i = 0; i < tamano; i++) {
+			Document d = listDocumentPurse.get(i);
+			v_entregado = v_entregado + d.getValueTotal();
+			v_recibido = v_recibido + d.getRecivedValue();
+			dias = dias + d.getRateDoc().getDays();
+			transcurridos = transcurridos+d.getDays();
+		}
+
+			
+		TCEAT = Math.pow(v_entregado / v_recibido, dias / (double) transcurridos) - 1;
+		purse.setTCEA(TCEAT*100);
+		purse.setTotalRecivedAmount(v_recibido);
+		iPurseService.save(purse);
+
+		model.addAttribute("purse", purse);
 		model.addAttribute("listCarteraFactura",listDocumentPurse);
 		}
 		return "carteraFactura";
@@ -1028,6 +1083,14 @@ public class DocumentController {
 			document.setTCEA(TCEA * (double) 100);
 		}
 
+		document = null;
+		document = new Document();
+		rate = null;
+		rate = new Rate();
+		listCostCi= null;
+		listCostCf=null;
+		listCostCi= new ArrayList<Cost>();
+		listCostCf=new ArrayList<Cost>();
 		return "redirect:/document/iractualizarCarteraFactura";
 
 	}
@@ -1367,6 +1430,40 @@ public class DocumentController {
 		}
 		return "redirect:/document/iractualizarLetra";
 	}
+	
+	@RequestMapping("/eliminarCarteraFactura")
+	public String eliminarCarteraFactura(Map<String, Object> model, @RequestParam(value = "id") Integer id) {
+		try {
+
+			int n = listCostCf.size();
+			int m = listCostCi.size();
+			System.out.println(n+"   "+m);
+			if (id != null) {
+
+				for (int i = 0; i < n; i++) {
+					Cost cost = listCostCf.get(i);
+					if (cost.getIdRef() == id) {
+						listCostEliminadosCf.add(cost);
+						listCostCf.remove(i);
+						System.out.println("ELIMINADO EXITOSO");
+					}
+				}
+				for (int i = 0; i < m; i++) {
+					Cost cost = listCostCi.get(i);
+					if (cost.getIdRef() == id) {
+						listCostEliminadosCi.add(cost);
+						listCostCi.remove(i);
+						System.out.println("ELIMINADO EXITOSO");
+					}
+				}
+
+			}
+		} catch (Exception ex) {
+
+		}
+		return "redirect:/document/iractualizarCarteraFactura";
+	}
+	
 	
 	public int calcularEdad(Date dateOfIssue, Date paymentDate) {
 		Calendar fecha1 = Calendar.getInstance();
