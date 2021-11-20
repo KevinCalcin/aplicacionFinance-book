@@ -238,7 +238,7 @@ public class DocumentController {
 		return "redirect:/document/iractualizarFactura";
 
 	}
-	
+	//
 	@RequestMapping("/registrarCostoInicialesL")
 	public String registrarCostoInicialesL(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
 			throws ParseException {
