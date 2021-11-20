@@ -20,22 +20,22 @@ public class Purse implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idPurse;
 
-	@Column(name = "totalGivenAmount", length = 150, nullable = false)
+	@Column(name = "totalGivenAmount", length = 150, nullable = true)
 	private double totalGivenAmount;
 
-	@Column(name = "totalRecivedAmount", length = 150, nullable = false)
+	@Column(name = "totalRecivedAmount", length = 150, nullable = true)
 	private double totalRecivedAmount;
 
-	@Column(name = "totalInitialCost", length = 150, nullable = false)
+	@Column(name = "totalInitialCost", length = 150, nullable = true)
 	private double totalInitialCost;
 
-	@Column(name = "totalFinalCost", length = 150, nullable = false)
+	@Column(name = "totalFinalCost", length = 150, nullable = true)
 	private double totalFinalCost;
 
-	@Column(name = "TCEA", length = 150, nullable = false)
+	@Column(name = "TCEA", length = 150, nullable = true)
 	private double TCEA;
 
-	@Column(name = "TIR", length = 150, nullable = false)
+	@Column(name = "TIR", length = 150, nullable = true)
 	private int TIR;
 
 
@@ -126,8 +126,5 @@ public class Purse implements Serializable {
 		TIR = tIR;
 	}
 
-
 	
-
-
 }

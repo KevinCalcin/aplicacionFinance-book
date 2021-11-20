@@ -313,6 +313,21 @@ public class DocumentController {
 
 	}
 	
+	@RequestMapping("/registrarCostosInicialesCarteraFactura")             //CARTERA FACTURA
+	public String v(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
+			throws ParseException {
+
+		objCost.setIdRef(contador);
+
+		contador = contador + 1;
+
+		listCostCi.add(objCost);
+
+		return "redirect:/document/iractualizarCarteraFactura";
+
+	}
+	
+	
 	@RequestMapping("/registrarCostoInicialesL")
 	public String registrarCostoInicialesL(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
 			throws ParseException {
@@ -340,6 +355,18 @@ public class DocumentController {
 
 	}
 	
+	@RequestMapping("/registrarCostosFinalesCarteraFactura")   //CARTERA FACTURA
+	public String registrarCostosFinalesCarteraFactura(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
+			throws ParseException {
+
+		objCost.setIdRef(contador);
+
+		contador = contador + 1;
+
+		listCostCf.add(objCost);
+		return "redirect:/document/iractualizarCarteraFactura";
+
+	}
 	@ RequestMapping("/registrarCostosFinalesL")
 	public String registrarCostoFinalesL(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
 			throws ParseException {

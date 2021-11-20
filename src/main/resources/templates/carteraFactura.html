@@ -261,7 +261,7 @@
 
 	<div class="row">
 		<div class="form-group col-sm-6">
-			<form th:action="@{/document/registrarCostosIniciales}" method="post"
+			<form th:action="@{/document/registrarCostosInicialesCarteraFactura}" method="post"
 				th:object="${cost}">
 				<h5>Costo Iniciales</h5>
 
@@ -316,7 +316,7 @@
 
 		<div class="form-group col-sm-6">
 
-			<form th:action="@{/document/registrarCostosFinales}" method="post"
+			<form th:action="@{/document/registrarCostosFinalesCarteraFactura}" method="post"
 				th:object="${cost}">
 
 				<h5>Costo finales</h5>
@@ -380,131 +380,50 @@
 	<div th:if="${resultados ==1}"
 		style="position: absolute; top: 125%; left: 25%;">
 		<form th:object="${document}">
-			<div class="row">
-				<div class="form-group col-sm-6">
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(TEA) Tasa Efectiva Anual (sin costes)</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item"
-								th:field="*{RateDoc.rate}" />
-						</div>
-					</div>
 
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(ND) Número de días transcurridos</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item" th:field="*{days}" />
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(TE) Tasa Efectiva a 1 días</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item" th:field="*{teD}" />
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(d) Tasa Descontada a 1 días</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item"
-								th:field="*{discountedRate}" />
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(D) Descuento por 1 días</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item"
-								th:field="*{daysDiscount}" />
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(Rt) Retención</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item"
-								th:field="*{retention}" />
-						</div>
-					</div>
-				</div>
+			<table class="table table-striped table-hover">
+				<thead class="table-head">
+					<tr>
+						<th class="text-center">Fecha de Giro</th>
+						<th class="text-center">Valor Nom.</th>
+						<th class="text-center">Fecha venc.</th>
+						<th class="text-center">Dias</th>
+						<th class="text-center">Retención</th>
+						<th class="text-center">TE%</th>
+						<th class="text-center">d%</th>
+						<th class="text-center">Descuento</th>
+						<th class="text-center">Coste ini.</th>
+						<th class="text-center">Coste fin.</th>
+						<th class="text-center">Val. Neto</th>
+						<th class="text-center">Valo. Rec.</th>
+						<th class="text-center">Val. Ent.</th>
+						<th class="text-center">TCEA%</th>
 
 
 
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="l: ${listCarteraFactura}">
+						<td style="text-align: center" th:text="${l.dateOfIssue}"></td>
+						<td style="text-align: center" th:text="${l.nominalValue}"></td>
+						<td style="text-align: center" th:text="${l.paymentDate}"></td>
+						<td style="text-align: center" th:text="${l.days}"></td>
+						<td style="text-align: center" th:text="${l.retention}"></td>
+						<td style="text-align: center" th:text="${l.teD}"></td>
+						<td style="text-align: center" th:text="${l.discountedRate}"></td>
+						<td style="text-align: center" th:text="${l.daysDiscount}"></td>
+						<td style="text-align: center" th:text="${l.totalInitialCost}"></td>
+						<td style="text-align: center" th:text="${l.totalFinalCost}"></td>
+						<td style="text-align: center" th:text="${l.netValue}"></td>
+						<td style="text-align: center" th:text="${l.recivedValue}"></td>
+						<td style="text-align: center" th:text="${l.valueTotal}"></td>
+						<td style="text-align: center" th:text="${l.TCEA}"></td>
+					</tr>
+				</tbody>
+			</table>
 
-				<div class="form-group col-sm-6">
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(CI) Costes Iniciales Totales</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item"
-								th:field="*{totalInitialCost}" />
-						</div>
-					</div>
 
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(VNet) Valor Neto</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item"
-								th:field="*{netValue}" />
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(VR) Valor Total a Recibir</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item"
-								th:field="*{recivedValue}" />
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(CF) Costes Finales Totales</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item"
-								th:field="*{totalFinalCost}" />
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(VE) Valor Total a Entregar</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item"
-								th:field="*{valueTotal}" />
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="form-group col-sm-6">
-							<label for="pwd">(TCEA) Tasa de Coste Efectiva Anual</label>
-						</div>
-						<div class="form-group col-sm-6">
-							<input type="text" class="form-control item" th:field="*{TCEA}" />
-						</div>
-					</div>
-				</div>
-			</div>
 		</form>
 
 	</div>
