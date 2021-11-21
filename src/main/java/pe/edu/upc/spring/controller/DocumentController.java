@@ -1107,7 +1107,7 @@ public class DocumentController {
 		double valor_recibido;
 		double valor_total;
 		double TCEA;
-
+//
 		if (tasa_factura == 1) { // calculo para tasa efectiva
 
 			tasa = objRate.getRateNominal() / (double) 100;
