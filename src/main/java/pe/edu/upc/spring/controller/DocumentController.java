@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.sun.el.parser.ParseException;
 
 import pe.edu.upc.spring.model.Cost;
 import pe.edu.upc.spring.model.Document;
@@ -691,7 +690,7 @@ public class DocumentController {
 
 	@RequestMapping("/registrarCostosIniciales")
 	public String registrarCostoIniciales(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+			 {
 
 		objCost.setIdRef(contador);
 
@@ -705,7 +704,7 @@ public class DocumentController {
 	
 	@RequestMapping("/registrarCostosInicialesRecibo")
 	public String registrarCostosInicialesRecibo(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+			 {
 
 		objCost.setIdRef(contador);
 
@@ -719,7 +718,7 @@ public class DocumentController {
 	
 	@RequestMapping("/registrarCostosInicialesCarteraFactura")             //CARTERA FACTURA
 	public String v(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+			 {
 
 		objCost.setIdRef(contador);
 
@@ -733,7 +732,7 @@ public class DocumentController {
 	
 	@RequestMapping("/registrarCostosInicialesCarteraLetra")             //CARTERA LETRA
 	public String registrarCostosInicialesCarteraLetra(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+		 {
 
 		objCost.setIdRef(contador);
 
@@ -748,7 +747,7 @@ public class DocumentController {
 	
 	@RequestMapping("/registrarCostosInicialesCarteraRecibo")             //CARTERA LETRA
 	public String registrarCostosInicialesCarteraRecibo(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+			 {
 
 		objCost.setIdRef(contador);
 
@@ -763,7 +762,7 @@ public class DocumentController {
 	
 	@RequestMapping("/registrarCostoInicialesL")
 	public String registrarCostoInicialesL(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+			 {
 
 		objCost.setIdRef(contador);
 
@@ -777,7 +776,7 @@ public class DocumentController {
 
 	@RequestMapping("/registrarCostosFinales")
 	public String registrarCostoFinales(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+			 {
 
 		objCost.setIdRef(contador);
 
@@ -790,7 +789,7 @@ public class DocumentController {
 	
 	@RequestMapping("/registrarCostosFinalesRecibo")
 	public String registrarCostosFinalesRecibo(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+		 {
 
 		objCost.setIdRef(contador);
 
@@ -803,7 +802,7 @@ public class DocumentController {
 	
 	@RequestMapping("/registrarCostosFinalesCarteraFactura")   //CARTERA FACTURA
 	public String registrarCostosFinalesCarteraFactura(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+	{
 
 		objCost.setIdRef(contador);
 
@@ -816,7 +815,7 @@ public class DocumentController {
 	
 	@RequestMapping("/registrarCostosFinalesCarteraLetra")   //CARTERA LETRA
 	public String registrarCostosFinalesCarteraLetra(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+			 {
 
 		objCost.setIdRef(contador);
 
@@ -829,7 +828,7 @@ public class DocumentController {
 	
 	@RequestMapping("/registrarCostosFinalesCarteraRecibo")   //CARTERA LETRA
 	public String registrarCostosFinalesCarteraRecibo(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+			 {
 
 		objCost.setIdRef(contador);
 
@@ -842,7 +841,7 @@ public class DocumentController {
 	
 	@ RequestMapping("/registrarCostosFinalesL")
 	public String registrarCostoFinalesL(@ModelAttribute Cost objCost, BindingResult binRes, Model model)
-			throws ParseException {
+		 {
 
 		objCost.setIdRef(contador);
 
@@ -854,7 +853,7 @@ public class DocumentController {
 	}
 
 	@RequestMapping("/Modificar")
-	public String modificar() throws ParseException {
+	public String modificar() {
 		listCostCi = null;
 		listCostCi = new ArrayList<Cost>();
 		listCostCf = null;
@@ -899,7 +898,7 @@ public class DocumentController {
 	
 	
 	@RequestMapping("/ModificarRecibo")
-	public String ModificarRecibo() throws ParseException {
+	public String ModificarRecibo() {
 		listCostCi = null;
 		listCostCi = new ArrayList<Cost>();
 		listCostCf = null;
@@ -943,7 +942,7 @@ public class DocumentController {
 	}
 	
 	@RequestMapping("/ModificarL")
-	public String modificarL() throws ParseException {
+	public String modificarL()  {
 		listCostCi = null;
 		listCostCi = new ArrayList<Cost>();
 		listCostCf = null;
@@ -988,7 +987,7 @@ public class DocumentController {
 
 	@RequestMapping("/CrearFactura")
 	public String mostrar(@ModelAttribute Document objDocument, @ModelAttribute Rate objRate, BindingResult binRes,
-			Model model) throws ParseException {
+			Model model)  {
 
 		resultados = 1;
 
@@ -1257,7 +1256,7 @@ public class DocumentController {
 
 	@RequestMapping("/CrearRecibo")
 	public String CrearRecibo(@ModelAttribute Document objDocument, @ModelAttribute Rate objRate, BindingResult binRes,
-			Model model) throws ParseException {
+			Model model) {
 
 		resultados = 1;
 
@@ -1527,7 +1526,7 @@ public class DocumentController {
 	
 	@RequestMapping("/CrearCarteraFactura")
 	public String CrearCarteraFactura(@ModelAttribute Document objDocument, @ModelAttribute Rate objRate, BindingResult binRes,
-			Model model) throws ParseException {
+			Model model)  {
 
 		resultados = 1;
 
@@ -1811,7 +1810,7 @@ public class DocumentController {
 	
 	@RequestMapping("/CrearCarteraLetra")
 	public String CrearCarteraLetra(@ModelAttribute Document objDocument, @ModelAttribute Rate objRate, BindingResult binRes,
-			Model model) throws ParseException {
+			Model model)  {
 
 		resultados = 1;
 
@@ -2094,7 +2093,7 @@ public class DocumentController {
 	
 	@RequestMapping("/CrearCarteraRecibo")
 	public String CrearCarteraRecibo(@ModelAttribute Document objDocument, @ModelAttribute Rate objRate, BindingResult binRes,
-			Model model) throws ParseException {
+			Model model) {
 
 		resultados = 1;
 
@@ -2378,7 +2377,7 @@ public class DocumentController {
 	
 	@RequestMapping("/CrearLetra")
 	public String mostrarL(@ModelAttribute Document objDocument, @ModelAttribute Rate objRate, BindingResult binRes,
-			Model model) throws ParseException {
+			Model model) {
 
 		resultados = 1;
 

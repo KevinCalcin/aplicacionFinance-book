@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sun.el.parser.ParseException;
+
 
 import pe.edu.upc.spring.model.Users;
 import pe.edu.upc.spring.service.ICompanyService;
@@ -63,7 +63,7 @@ public class UserController {
 
 	@RequestMapping("/registrar")
 	public String registrar(@ModelAttribute("user") @Valid Users objUser, BindingResult binRes, Model model)
-			throws ParseException {
+			 {
 		if (binRes.hasErrors()) {
 			model.addAttribute("listCompany", cService.listCompany());
 			model.addAttribute("listType", tService.listType());
@@ -81,7 +81,7 @@ public class UserController {
 	}
 
 	@RequestMapping("/validarUsuario")
-	public String ingresarCuenta(@ModelAttribute("user") @Valid Users objUser, BindingResult binRes) throws ParseException {
+	public String ingresarCuenta(@ModelAttribute("user") @Valid Users objUser, BindingResult binRes) {
 
 		List<Users> listUsers;
 		objUser.setEmail(objUser.getEmail());
