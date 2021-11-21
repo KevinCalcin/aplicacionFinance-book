@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>pe.edu.upc.spring</groupId>
-	<artifactId>finance-kenan</artifactId>
+	<artifactId>AplicacionWeb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>finance-kenan</name>
+	<name>AplicacionWeb</name>
 	<description>Proyecto demo spring boot</description>
 	<properties>
 		<java.version>1.8</java.version>
